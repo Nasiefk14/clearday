@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Clearday
 
-## Getting Started
+**Know exactly when you'll be debt-free.** A free, private and simple app for tracking monthly debt installments across your bank accounts.
 
-First, run the development server:
+<p>
+  <img src="docs/screenshots/dashboard.png" width="260" alt="Dashboard showing total owed, monthly installments, salary and what's left over">
+  <img src="docs/screenshots/account.png" width="260" alt="A bank account with its salary and debts to tick off">
+  <img src="docs/screenshots/dashboard-dark.png" width="260" alt="The dashboard in dark mode">
+</p>
+
+## What it does
+
+- **Bank accounts with a salary each.** See how much leaves each account every month and what's left over.
+- **Debts with balance and installment.** Tick each one off when it's paid.
+- **Automatic carry-over.** Each new month starts with paid debts reduced by their installment. Edit any number if your statement says otherwise.
+- **Payday-based months.** A month runs from your payday to the day before the next one.
+- **Debt-free date.** A payoff date for every debt (including interest, if you add the rate) and one overall date.
+- **Due-soon reminders** for installments that aren't ticked off yet.
+- **Private.** Google sign-in only, invite-only, no bank connections. See [SECURITY.md](SECURITY.md).
+
+## Tech
+
+Next.js 16 (App Router, Server Actions) · TypeScript · Prisma 7 + PostgreSQL · Auth.js (Google) · Tailwind CSS 4 · Zod · Vitest · GitHub Actions
+
+The money logic (carry-over, totals, payoff months, pay cycles) lives in small pure functions in [`src/lib`](src/lib) and is tested first. All database access goes through one user-scoped layer, [`src/lib/data.ts`](src/lib/data.ts), with an integration test that proves one user can't see or change another user's data.
+
+## Run it locally
+
+You need Node 24 and Docker.
 
 ```bash
+cp .env.example .env          # then fill in AUTH_SECRET (npx auth secret) and Google OAuth keys
+docker compose up -d          # Postgres for dev (5434) and tests (5435)
+npm install
+npx prisma migrate dev        # create the tables
+npm run db:seed               # optional: fake demo data
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Add your Google email to `ALLOWED_EMAILS` in `.env` so you can sign in.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tests
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm test             # unit + integration (needs the test database from docker compose)
+npm run test:unit    # just the pure logic, no database
+```
 
-## Learn More
+## Roadmap
 
-To learn more about Next.js, take a look at the following resources:
+- [x] Accounts, debts, salary, monthly carry-over, totals
+- [x] Google sign-in with an invite list
+- [ ] Payoff calculator: estimate from your real balance history, "what if I pay extra?"
+- [ ] Public landing page with a live demo (no sign-up)
+- [ ] Suggestions board and "What's new" page
+- [ ] Export and delete my data, installable phone app
+- [ ] Snowball vs avalanche comparison, milestone celebrations
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[MIT](LICENSE)
