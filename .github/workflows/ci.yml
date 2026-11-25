@@ -27,7 +27,7 @@ jobs:
       TEST_DATABASE_URL: postgresql://clearday:clearday@localhost:5435/clearday_test
       AUTH_SECRET: ci-only-not-a-secret
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version: 24
