@@ -1,0 +1,26 @@
+# Local development only. Production uses Neon.
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: clearday
+      POSTGRES_PASSWORD: clearday
+      POSTGRES_DB: clearday
+    ports:
+      - "5434:5432"
+    volumes:
+      - clearday-data:/var/lib/postgresql/data
+
+  db_test:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: clearday
+      POSTGRES_PASSWORD: clearday
+      POSTGRES_DB: clearday_test
+    ports:
+      - "5435:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+
+volumes:
+  clearday-data:
