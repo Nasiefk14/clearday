@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: clearday
+          POSTGRES_PASSWORD: clearday
+          POSTGRES_DB: clearday_test
+        ports: ["5435:5432"]
+        options: >-
+          --health-cmd "pg_isready -U clearday" --health-interval 5s --health-timeout 5s --health-retries 10
+    # No real secrets: CI only ever talks to the throwaway test database.
+    env:
+      DATABASE_URL: postgresql://clearday:clearday@localhost:5435/clearday_test
+      TEST_DATABASE_URL: postgresql://clearday:clearday@localhost:5435/clearday_test
+      AUTH_SECRET: ci-only-not-a-secret
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npm audit --audit-level=high
