@@ -1,26 +1,73 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --paper: #f7f5ef;
+  --card: #ffffff;
+  --ink: #10231c;
+  --muted: #5b6b64;
+  --line: #e8e5dc;
+  --brand: #0f3d2e;
+  --mint: #3ddc97;
+  --soft: #dff7ec;
+  --pos: #1f9a68;
+  --neg: #c2410c;
+  --warn-bg: #fff4e3;
+  --warn-line: #f6d7a6;
+  --warn-ink: #7a4b06;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --paper: #0b1612;
+    --card: #13221c;
+    --ink: #e9f2ee;
+    --muted: #93a59d;
+    --line: #21352d;
+    --soft: #173a2c;
+    --pos: #3ddc97;
+    --neg: #fb923c;
+    --warn-bg: #2b2312;
+    --warn-line: #5a4520;
+    --warn-ink: #f5cf8f;
   }
 }
 
+@theme inline {
+  --color-paper: var(--paper);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-mint: var(--mint);
+  --color-soft: var(--soft);
+  --color-pos: var(--pos);
+  --color-neg: var(--neg);
+  --color-warn-bg: var(--warn-bg);
+  --color-warn-line: var(--warn-line);
+  --color-warn-ink: var(--warn-ink);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-fraunces);
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* Shared form controls */
+.field {
+  @apply w-full rounded-xl border border-line bg-paper px-3 py-2 text-ink outline-none focus:border-mint focus:ring-2 focus:ring-mint/30;
+}
+.btn {
+  @apply inline-flex items-center justify-center rounded-xl bg-brand px-4 py-2 font-semibold text-white hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mint disabled:opacity-50;
+}
+.btn-ghost {
+  @apply inline-flex items-center justify-center rounded-xl border border-line px-4 py-2 font-semibold text-ink hover:bg-card;
+}
+.label {
+  @apply text-[11px] font-semibold uppercase tracking-wider text-muted;
+}
+.card {
+  @apply rounded-2xl border border-line bg-card;
 }
