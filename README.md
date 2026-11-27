@@ -3,9 +3,9 @@
 **Know exactly when you'll be debt-free.** A free, private and simple app for tracking monthly debt installments across your bank accounts.
 
 <p>
-  <img src="docs/screenshots/dashboard.png" width="260" alt="Dashboard showing total owed, monthly installments, salary and what's left over">
-  <img src="docs/screenshots/account.png" width="260" alt="A bank account with its salary and debts to tick off">
-  <img src="docs/screenshots/dashboard-dark.png" width="260" alt="The dashboard in dark mode">
+  <img src="docs/screenshots/bold-dark.png" width="260" alt="Bold style in dark mode: percentage paid off, progress blocks, money going out and left over, and this month's payments">
+  <img src="docs/screenshots/playful-light.png" width="260" alt="Playful style in light mode: a lime progress card and this month's payments with tick boxes">
+  <img src="docs/screenshots/edit-sheet.png" width="260" alt="Editing a debt in a sheet that slides up from the bottom">
 </p>
 
 ## What it does
@@ -15,7 +15,8 @@
 - **Automatic carry-over.** Each new month starts with paid debts reduced by their installment. Edit any number if your statement says otherwise.
 - **Payday-based months.** A month runs from your payday to the day before the next one.
 - **Debt-free date.** A payoff date for every debt (including interest, if you add the rate) and one overall date.
-- **Due-soon reminders** for installments that aren't ticked off yet.
+- **Due-soon hints** for installments that aren't ticked off yet.
+- **Two styles, light and dark.** Bold or Playful, following your phone's light/dark setting or your choice.
 - **Private.** Google sign-in only, invite-only, no bank connections. See [SECURITY.md](SECURITY.md).
 
 ## Tech
