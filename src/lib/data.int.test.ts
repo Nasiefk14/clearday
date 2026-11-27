@@ -55,6 +55,8 @@ describe("carry-over between cycles", () => {
     expect(novDebts.map((d) => d.id)).not.toContain(old.id);
     expect(nov.accounts[0].salary).toBe(1_850_000);
     expect(nov.totals.total).toEqual({ owed: 10_870_000, toPay: 580_000, salary: 1_850_000, leftOver: 1_270_000 });
+    // Progress baseline: first recorded balances, including the closed debt (closing counts as paid off).
+    expect(nov.started).toBe(1_420_000 + 9_600_000 + 50_000);
   });
 
   it("is idempotent", async () => {

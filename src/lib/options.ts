@@ -9,3 +9,13 @@ export const DEBT_TYPES = [
 ] as const;
 
 export const CURRENCIES = ["ZAR", "USD", "EUR", "GBP", "AUD", "CAD", "NZD", "INR", "NGN", "KES"];
+
+export const DEBT_EMOJI: Record<string, string> = {
+  CREDIT_CARD: "💳",
+  PERSONAL_LOAN: "🤝",
+  CAR: "🚗",
+  HOME: "🏠",
+  STORE: "🛍️",
+  STUDENT: "🎓",
+  OTHER: "🧾",
+};

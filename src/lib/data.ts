@@ -1,7 +1,7 @@
 // The only place that touches user data. Every function takes the signed-in userId
 // (from requireUser(), never from the client) and scopes every query by it.
 import { prisma } from "@/lib/prisma";
-import type { DebtType } from "@/generated/prisma/client";
+import type { Appearance, DebtType, Style } from "@/generated/prisma/client";
 import { monthsToPayoff, rollForward, tally } from "@/lib/budget";
 import { toCents, toDecimalString } from "@/lib/money";
 import type { Cycle } from "@/lib/cycle";
@@ -19,11 +19,14 @@ const assertFound = (count: number) => {
 export function getUser(userId: string) {
   return prisma.user.findUniqueOrThrow({
     where: { id: userId },
-    select: { id: true, name: true, email: true, image: true, currency: true, payday: true },
+    select: { id: true, name: true, email: true, image: true, currency: true, payday: true, style: true, appearance: true },
   });
 }
 
-export async function updateSettings(userId: string, data: { payday: number; currency: string }) {
+export async function updateSettings(
+  userId: string,
+  data: Partial<{ payday: number; currency: string; style: Style; appearance: Appearance }>,
+) {
   await prisma.user.update({ where: { id: userId }, data });
 }
 
@@ -106,10 +109,24 @@ export async function getCycleView(userId: string, cycle: Cycle) {
     view.map((a) => ({ id: a.id, salary: a.salary })),
     view.flatMap((a) => a.debts.map((d) => ({ bankAccountId: a.id, ...d.entry }))),
   );
-  return { accounts: view, totals };
+  const startedByDebt = await startingBalances(userId, cycle);
+  const started = [...startedByDebt.values()].reduce((a, b) => a + b, 0);
+  return { accounts: view, totals, started, startedByDebt };
 }
 
 export type CycleView = Awaited<ReturnType<typeof getCycleView>>;
+
+/** Each debt's first recorded balance (up to this cycle), closed debts included: the baseline for progress. */
+async function startingBalances(userId: string, cycle: Cycle) {
+  const debts = await prisma.debt.findMany({
+    where: { userId },
+    select: {
+      id: true,
+      entries: { where: { cycle: { lte: cycle } }, orderBy: { cycle: "asc" }, take: 1, select: { balance: true } },
+    },
+  });
+  return new Map(debts.flatMap((d) => (d.entries[0] ? [[d.id, toCents(d.entries[0].balance)] as const] : [])));
+}
 
 // ---------- bank accounts ----------
 
