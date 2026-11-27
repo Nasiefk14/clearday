@@ -1,7 +1,8 @@
+import Link from "next/link";
 import { requireUserId } from "@/auth";
 import { getUser, listForManage } from "@/lib/data";
 import { formatMoney, toCents } from "@/lib/money";
-import { CURRENCIES, DEBT_TYPES } from "@/lib/options";
+import { DEBT_TYPES } from "@/lib/options";
 import {
   createBankAccountAction,
   createDebtAction,
@@ -9,7 +10,6 @@ import {
   renameBankAccountAction,
   setDebtClosedAction,
   updateDebtAction,
-  updateSettingsAction,
 } from "../actions";
 
 type Account = Awaited<ReturnType<typeof listForManage>>[number];
@@ -21,7 +21,12 @@ export default async function ManagePage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-display text-3xl font-bold">Manage</h1>
+      <div>
+        <Link href="/dashboard" className="text-sm text-muted">
+          ‹ Home
+        </Link>
+        <h1 className="mt-1 text-3xl font-bold tracking-tight">Bank accounts &amp; debts</h1>
+      </div>
 
       <Section title="Bank accounts" hint="The accounts your payments go off from.">
         {accounts.map((a) => (
@@ -46,7 +51,7 @@ export default async function ManagePage() {
       </Section>
 
       {accounts.length > 0 && (
-        <Section title="Add a debt" hint="It starts in this month. Balance and installment can change each month on the account page.">
+        <Section id="add-debt" title="Add a debt" hint="It starts in this month. Balance and installment can change each month on the account page.">
           <form action={createDebtAction} className="card grid gap-3 p-4 sm:grid-cols-2">
             <DebtFields accounts={accounts} />
             <Field label="Balance owed">
@@ -68,21 +73,6 @@ export default async function ManagePage() {
         </Section>
       )}
 
-      <Section title="Settings">
-        <form action={updateSettingsAction} className="card grid grid-cols-2 gap-3 p-4">
-          <Field label="Payday (day of month)">
-            <input name="payday" type="number" min={1} max={31} required defaultValue={user.payday} className="field" />
-          </Field>
-          <Field label="Currency">
-            <select name="currency" defaultValue={user.currency} className="field">
-              {CURRENCIES.map((c) => (
-                <option key={c}>{c}</option>
-              ))}
-            </select>
-          </Field>
-          <button className="btn col-span-2">Save settings</button>
-        </form>
-      </Section>
     </div>
   );
 }
@@ -147,10 +137,10 @@ function DebtFields({ accounts, debt }: { accounts: Account[]; debt?: Debt }) {
   );
 }
 
-function Section({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
+function Section({ id, title, hint, children }: { id?: string; title: string; hint?: string; children: React.ReactNode }) {
   return (
-    <section className="space-y-2">
-      <h2 className="font-display text-xl font-bold">{title}</h2>
+    <section id={id} className="scroll-mt-6 space-y-2">
+      <h2 className="text-xl font-bold">{title}</h2>
       {hint && <p className="text-sm text-muted">{hint}</p>}
       {children}
     </section>

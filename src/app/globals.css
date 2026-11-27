@@ -1,35 +1,63 @@
 @import "tailwindcss";
 
-:root {
-  --paper: #f7f5ef;
+/* Theme: lime accent, light/dark, two styles (Bold = Space Grotesk, Playful = Nunito).
+   The app wrapper sets data-appearance (system|light|dark) and data-style (bold|playful). */
+
+:root,
+[data-appearance] {
+  --paper: #f4f5f7;
   --card: #ffffff;
-  --ink: #10231c;
-  --muted: #5b6b64;
-  --line: #e8e5dc;
-  --brand: #0f3d2e;
-  --mint: #3ddc97;
-  --soft: #dff7ec;
-  --pos: #1f9a68;
-  --neg: #c2410c;
-  --warn-bg: #fff4e3;
-  --warn-line: #f6d7a6;
-  --warn-ink: #7a4b06;
+  --ink: #0b0d12;
+  --muted: #6b7080;
+  --line: #d9dce3;
+  --empty: #e3e5ea;
+  --field: #f4f5f7;
+  --shade: 0 1px 0 #dfe2e8;
+  --hl: #0b0d12; /* text that is lime on dark, ink on light */
+  --hl-bg: #c6ff3d; /* light mode puts a lime highlight behind it instead */
+  --hl-pad: 0.5rem;
+  --tick-on: #0b0d12; /* border of a ticked box: dark on light so lime stays visible */
+  --app-font: var(--font-grotesk);
+  color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #0b1612;
-    --card: #13221c;
-    --ink: #e9f2ee;
-    --muted: #93a59d;
-    --line: #21352d;
-    --soft: #173a2c;
-    --pos: #3ddc97;
-    --neg: #fb923c;
-    --warn-bg: #2b2312;
-    --warn-line: #5a4520;
-    --warn-ink: #f5cf8f;
+  :root,
+  [data-appearance="system"] {
+    --paper: #0b0d12;
+    --card: #151821;
+    --ink: #ffffff;
+    --muted: #8b90a0;
+    --line: #2a2f3a;
+    --empty: #1c2029;
+    --field: #0b0d12;
+    --shade: none;
+    --hl: #c6ff3d;
+    --hl-bg: transparent;
+    --hl-pad: 0;
+    --tick-on: #c6ff3d;
+    color-scheme: dark;
   }
+}
+
+[data-appearance="dark"] {
+  --paper: #0b0d12;
+  --card: #151821;
+  --ink: #ffffff;
+  --muted: #8b90a0;
+  --line: #2a2f3a;
+  --empty: #1c2029;
+  --field: #0b0d12;
+  --shade: none;
+  --hl: #c6ff3d;
+  --hl-bg: transparent;
+  --hl-pad: 0;
+  --tick-on: #c6ff3d;
+  color-scheme: dark;
+}
+
+[data-style="playful"] {
+  --app-font: var(--font-nunito);
 }
 
 @theme inline {
@@ -38,16 +66,17 @@
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-line: var(--line);
-  --color-brand: var(--brand);
-  --color-mint: var(--mint);
-  --color-soft: var(--soft);
-  --color-pos: var(--pos);
-  --color-neg: var(--neg);
-  --color-warn-bg: var(--warn-bg);
-  --color-warn-line: var(--warn-line);
-  --color-warn-ink: var(--warn-ink);
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-fraunces);
+  --color-empty: var(--empty);
+  --color-field: var(--field);
+  --color-hl: var(--hl);
+  --color-hl-bg: var(--hl-bg);
+  --color-tick-on: var(--tick-on);
+  --color-lime: #c6ff3d;
+  --color-lime-ink: #3d4a12;
+  --color-night: #0b0d12;
+  --color-neg: #f97316;
+  --shadow-shade: var(--shade);
+  --font-sans: var(--app-font);
 }
 
 body {
@@ -55,19 +84,19 @@ body {
   color: var(--ink);
 }
 
-/* Shared form controls */
+/* Shared controls */
 .field {
-  @apply w-full rounded-xl border border-line bg-paper px-3 py-2 text-ink outline-none focus:border-mint focus:ring-2 focus:ring-mint/30;
+  @apply w-full rounded-xl border-[1.5px] border-line bg-field px-3 py-2.5 font-semibold text-ink outline-none focus:border-hl;
 }
 .btn {
-  @apply inline-flex items-center justify-center rounded-xl bg-brand px-4 py-2 font-semibold text-white hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mint disabled:opacity-50;
+  @apply inline-flex items-center justify-center rounded-2xl bg-lime px-4 py-3 font-bold text-night hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hl disabled:opacity-50;
 }
 .btn-ghost {
-  @apply inline-flex items-center justify-center rounded-xl border border-line px-4 py-2 font-semibold text-ink hover:bg-card;
+  @apply inline-flex items-center justify-center rounded-xl border-[1.5px] border-line px-4 py-2 font-semibold text-ink hover:bg-card;
 }
 .label {
-  @apply text-[11px] font-semibold uppercase tracking-wider text-muted;
+  @apply text-xs font-medium text-muted;
 }
 .card {
-  @apply rounded-2xl border border-line bg-card;
+  @apply rounded-2xl bg-card shadow-shade;
 }
