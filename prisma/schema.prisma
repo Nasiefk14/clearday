@@ -17,6 +17,8 @@ model User {
   image         String?
   currency      String    @default("ZAR")
   payday        Int       @default(25) // 1–31, clamped to month length
+  style         Style     @default(BOLD)
+  appearance    Appearance @default(SYSTEM)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -65,6 +67,17 @@ model VerificationToken {
 }
 
 // ---------- Clearday ----------
+
+enum Style {
+  BOLD
+  PLAYFUL
+}
+
+enum Appearance {
+  SYSTEM
+  LIGHT
+  DARK
+}
 
 model BankAccount {
   id        String   @id @default(cuid())

@@ -102,6 +102,37 @@ export async function setSalaryAction(fd: FormData) {
   done();
 }
 
+/** Edit sheet: the debt's terms and this month's numbers in one save. */
+export async function saveDebtAction(fd: FormData) {
+  const userId = await requireUserId();
+  const { id: debtId, entryId, balance, installment, ...terms } = z
+    .object({ id, entryId: id, ...debtFields, balance: money, installment: money })
+    .parse(form(fd));
+  await data.updateDebt(userId, debtId, terms);
+  await data.updateEntry(userId, entryId, { balance, installment });
+  done();
+}
+
+/** Salary sheet: one "salary:<bankAccountId>" field per account for a cycle. */
+export async function setSalariesAction(fd: FormData) {
+  const userId = await requireUserId();
+  const cycle = z.string().refine(isCycle).parse(fd.get("cycle"));
+  const salaries = [...fd.entries()].filter(([k]) => k.startsWith("salary:"));
+  for (const [key, value] of salaries) {
+    await data.setSalary(userId, id.parse(key.slice(7)), cycle, money.parse(value));
+  }
+  done();
+}
+
+export async function updatePreferenceAction(fd: FormData) {
+  const userId = await requireUserId();
+  const input = z
+    .object({ style: z.enum(["BOLD", "PLAYFUL"]).optional(), appearance: z.enum(["SYSTEM", "LIGHT", "DARK"]).optional() })
+    .parse(form(fd));
+  await data.updateSettings(userId, input);
+  done();
+}
+
 export async function updateSettingsAction(fd: FormData) {
   const userId = await requireUserId();
   const input = z

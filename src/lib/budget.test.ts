@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { monthsToPayoff, rollForward, tally } from "./budget";
+import { monthsToPayoff, progress, rollForward, tally } from "./budget";
 
 describe("rollForward", () => {
   const prev = [
@@ -72,5 +72,16 @@ describe("monthsToPayoff", () => {
   it("is null when it will never be paid off", () => {
     expect(monthsToPayoff(1_000_000, 0)).toBeNull();
     expect(monthsToPayoff(10_000_000, 50_000, 12)).toBeNull(); // interest R1,000 > installment R500
+  });
+});
+
+describe("progress", () => {
+  it("is the share paid off since the start", () => {
+    expect(progress(13_600_000, 19_700_000)).toBeCloseTo(0.3096, 3);
+  });
+  it("is clamped and safe with no history", () => {
+    expect(progress(0, 100)).toBe(1);
+    expect(progress(150, 100)).toBe(0); // balance grew (fees/interest)
+    expect(progress(100, 0)).toBe(0);
   });
 });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseMoney, toCents, toDecimalString } from "./money";
+import { formatMoney, formatMoneyShort, parseMoney, toCents, toDecimalString } from "./money";
 
 describe("parseMoney", () => {
   it("accepts plain and formatted amounts", () => {
@@ -23,5 +23,20 @@ describe("cents <-> decimal", () => {
     expect(toCents("14200.10")).toBe(1_420_010);
     expect(toDecimalString(1_420_010)).toBe("14200.10");
     expect(toDecimalString(5)).toBe("0.05");
+  });
+});
+
+describe("formatMoneyShort", () => {
+  it("abbreviates large amounts", () => {
+    expect(formatMoneyShort(19_700_000, "ZAR")).toBe("R197K");
+    expect(formatMoneyShort(250_000_000, "USD")).toBe("$3M");
+  });
+});
+
+describe("formatMoney", () => {
+  it("has no gap after the symbol and shows cents only when needed", () => {
+    expect(formatMoney(13_600_000, "ZAR")).toBe("R136,000");
+    expect(formatMoney(150_050, "ZAR")).toBe("R1,500.50");
+    expect(formatMoney(-30_000, "ZAR")).toBe("-R300");
   });
 });

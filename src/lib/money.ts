@@ -20,11 +20,25 @@ export function toDecimalString(cents: number): string {
   return `${Math.floor(cents / 100)}.${String(cents % 100).padStart(2, "0")}`;
 }
 
+// Intl writes "R 1,500" for some currencies; the design uses "R1,500".
+const tight = (s: string) => s.replace(/^(\D+?)\s+(?=\d)/, "$1");
+
 export function formatMoney(cents: number, currency: string): string {
-  return new Intl.NumberFormat("en-US", {
+  return tight(new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
     currencyDisplay: "narrowSymbol",
     minimumFractionDigits: cents % 100 === 0 ? 0 : 2,
-  }).format(cents / 100);
+  }).format(cents / 100));
+}
+
+/** Short form for tight spaces, e.g. "R197K". */
+export function formatMoneyShort(cents: number, currency: string): string {
+  return tight(new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+    currencyDisplay: "narrowSymbol",
+    notation: "compact",
+    maximumFractionDigits: 0,
+  }).format(cents / 100));
 }

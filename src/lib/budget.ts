@@ -54,3 +54,9 @@ export function monthsToPayoff(balance: number, installment: number, annualRateP
   }
   return months;
 }
+
+/** Share of the starting debt that's been paid off, 0–1. */
+export function progress(owed: number, started: number): number {
+  if (started <= 0) return 0;
+  return Math.min(1, Math.max(0, 1 - owed / started));
+}
